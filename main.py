@@ -1,9 +1,10 @@
 import logging
 import os
+import asyncio # <--- Added this for the delays
 from threading import Thread
 from flask import Flask
 import nest_asyncio 
-from telegram import Update
+from telegram import Update, constants
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler, filters
 
 # -----------------------------------------------------------------------------
@@ -13,11 +14,9 @@ app = Flask('')
 
 @app.route('/')
 def home():
-    return "I am alive! Bot is running."
+    return "System Online. Hacking in progress..."
 
 def run_http():
-    # Render assigns a port automatically via the 'PORT' environment variable
-    # If running locally, it defaults to 8080
     port = int(os.environ.get("PORT", 8080))
     app.run(host='0.0.0.0', port=port)
 
@@ -30,17 +29,16 @@ def keep_alive():
 # -----------------------------------------------------------------------------
 BOT_TOKEN = "7590792220:AAG3KIXVRzOF_cnhDpk91ERfIa_l2CLFbCU"
 
-# Apply nest_asyncio to prevent event loop errors
 nest_asyncio.apply()
 
-# Your Database
+# The Rick Roll Database
 MOD_DATABASE = {
-    "Forza": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    "FreeFire": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    "RDR": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    "minecraft": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    "skyrim": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    "gta": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    "forza": "https://bit.ly/3XzGQEq",
+    "freefire": "https://bit.ly/3XzGQEq",
+    "rdr": "https://bit.ly/3XzGQEq",
+    "minecraft": "https://bit.ly/3XzGQEq",
+    "skyrim": "https://bit.ly/3XzGQEq",
+    "gta": "https://bit.ly/3XzGQEq"
 }
 
 # -----------------------------------------------------------------------------
@@ -56,39 +54,91 @@ logging.basicConfig(
 # -----------------------------------------------------------------------------
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_first_name = update.effective_user.first_name
+    
+    # A more "terminal-like" welcome message
     instruction_message = (
-        f"Hello, {user_first_name}! 👋\n\n"
-        "I can help you find download links for specific game mods.\n\n"
-        "**How to search:**\n"
-        "Simply type the name of the game you are looking for.\n\n"
-        "**Examples:**\n"
-        "• Forza\n"
-        "• FreeFire\n"
-        "• gta"
+        f"💻 **TERMINAL V2.0 ONLINE**\n"
+        f"User: {user_first_name}\n"
+        f"Status: Connected to Dark Node\n\n"
+        "Enter target keyword to initiate extraction protocol.\n\n"
+        "**Available Targets:**\n"
+        "`> forza`\n"
+        "`> freefire`\n"
+        "`> gta`"
     )
-    await context.bot.send_message(chat_id=update.effective_chat.id, text=instruction_message)
+    await context.bot.send_message(
+        chat_id=update.effective_chat.id, 
+        text=instruction_message, 
+        parse_mode=constants.ParseMode.MARKDOWN
+    )
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_text = update.message.text.lower().strip()
+    chat_id = update.effective_chat.id
 
+    # 1. Send the initial "Loading" message
+    status_msg = await context.bot.send_message(
+        chat_id=chat_id, 
+        text="`[ ] Initializing HackTool...`",
+        parse_mode=constants.ParseMode.MARKDOWN
+    )
+
+    # 2. The Fake Hacking Sequence (The "Unhinged" part)
+    # We edit the SAME message repeatedly to create animation
+    steps = [
+        "`[█] Bypassing Mainframe Firewall...`",
+        "`[██] Accessing Dark Web Node (192.168.X.X)...`",
+        f"`[███] Searching database for '{user_text}'...`",
+        "`[████] Encrypted packet found. Decrypting (AES-256)...`",
+        "`[█████] Extraction complete. Generating link...`"
+    ]
+
+    for step in steps:
+        await asyncio.sleep(1.0) # Wait 1 second between steps
+        try:
+            await context.bot.edit_message_text(
+                chat_id=chat_id,
+                message_id=status_msg.message_id,
+                text=step,
+                parse_mode=constants.ParseMode.MARKDOWN
+            )
+        except Exception:
+            pass # Ignore errors if user deletes chat mid-hack
+
+    # 3. The Final Reveal
+    await asyncio.sleep(0.5)
+    
     if user_text in MOD_DATABASE:
         found_link = MOD_DATABASE[user_text]
-        response = f"✅ **Mod Found!**\n\nHere is the link for {user_text}:\n{found_link}"
-    else:
-        response = (
-            f"❌ Sorry, I couldn't find a mod for '{user_text}'.\n"
-            "Please check the spelling or try a different game name."
+        final_response = (
+            f"💀 **SYSTEM BREACH SUCCESSFUL** 💀\n\n"
+            f"**Target:** {user_text.upper()}\n"
+            f"**Source:** [REDACTED]\n"
+            f"**File Size:** 42.0 GB\n\n"
+            f"⬇️ **SECURE DOWNLOAD LINK:**\n{found_link}"
         )
-    await context.bot.send_message(chat_id=update.effective_chat.id, text=response)
+    else:
+        final_response = (
+            f"❌ **SYSTEM FAILURE**\n\n"
+            f"Target '{user_text}' not found in the matrix.\n"
+            "Try a different keyword."
+        )
+
+    # Replace the loading text with the final result
+    await context.bot.edit_message_text(
+        chat_id=chat_id,
+        message_id=status_msg.message_id,
+        text=final_response,
+        parse_mode=constants.ParseMode.MARKDOWN
+    )
 
 async def unknown(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await context.bot.send_message(chat_id=update.effective_chat.id, text="Sorry, I didn't understand that command.")
+    await context.bot.send_message(chat_id=update.effective_chat.id, text="`ERR: Unknown Command.`", parse_mode=constants.ParseMode.MARKDOWN)
 
 # -----------------------------------------------------------------------------
 # 5. MAIN EXECUTION
 # -----------------------------------------------------------------------------
 if __name__ == '__main__':
-    # Start the fake website in the background
     keep_alive()
     
     print("Bot is starting...")
@@ -105,5 +155,4 @@ if __name__ == '__main__':
 
     print("Bot is running!")
     
-    # Run the bot
     application.run_polling()

@@ -35,12 +35,12 @@ nest_asyncio.apply()
 
 # Your Database
 MOD_DATABASE = {
-    "game1": "https://www.link1.com",
-    "game2": "https://www.link2.com",
-    "game3": "https://www.link3.com",
-    "minecraft": "https://www.minecraftmods.com",
-    "skyrim": "https://www.nexusmods.com/skyrim",
-    "gta": "https://www.gta5-mods.com"
+    "Forza": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "FreeFire": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "RDR": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "minecraft": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "skyrim": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "gta": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
 }
 
 # -----------------------------------------------------------------------------
@@ -62,8 +62,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "**How to search:**\n"
         "Simply type the name of the game you are looking for.\n\n"
         "**Examples:**\n"
-        "• game1\n"
-        "• skyrim\n"
+        "• Forza\n"
+        "• FreeFire\n"
         "• gta"
     )
     await context.bot.send_message(chat_id=update.effective_chat.id, text=instruction_message)

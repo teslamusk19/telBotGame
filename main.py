@@ -33,12 +33,12 @@ nest_asyncio.apply()
 
 # The Rick Roll Database
 MOD_DATABASE = {
-    "forza": "https://bit.ly/3XzGQEq",
-    "freefire": "https://bit.ly/3XzGQEq",
-    "rdr": "https://bit.ly/3XzGQEq",
-    "minecraft": "https://bit.ly/3XzGQEq",
-    "skyrim": "https://bit.ly/3XzGQEq",
-    "gta": "https://bit.ly/3XzGQEq"
+    "forza": "https://r.mtdv.me/videos/8mdtaFBluK",
+    "freefire":"https://r.mtdv.me/videos/8mdtaFBluK",
+    "rdr": "https://r.mtdv.me/videos/8mdtaFBluK",
+    "minecraft": "https://r.mtdv.me/videos/8mdtaFBluK",
+    "skyrim": "https://r.mtdv.me/videos/8mdtaFBluK",
+    "gta": "https://r.mtdv.me/videos/8mdtaFBluK"
 }
 
 # -----------------------------------------------------------------------------
